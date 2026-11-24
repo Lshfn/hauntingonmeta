@@ -83,14 +83,24 @@ if (ctx) {
       ctx.stroke();
 
       if (face.facing > 0.12) {
-        const [x, y] = project(face.midpoint);
+        const [, y] = project(face.midpoint);
+        const edges = face.polygon.flatMap(([ax, ay], index) => {
+          const [bx, by] = face.polygon[(index + 1) % face.polygon.length];
+          if ((ay > y) === (by > y)) return [];
+          return [ax + ((y - ay) / (by - ay)) * (bx - ax)];
+        });
+        const left = Math.min(...edges);
+        const right = Math.max(...edges);
+        const labelWidth = right - left - 12;
+        if (labelWidth < 40) continue;
+
         ctx.save();
         ctx.clip();
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.font = '18px AllWords, Georgia, serif';
+        ctx.font = '17px Title1, sans-serif';
         ctx.fillStyle = active ? '#e5ffd8' : '#f2faff';
-        ctx.fillText(face.label, x, y, Math.min(140, 65 + face.facing * 78));
+        ctx.fillText(face.label.toUpperCase(), (left + right) / 2, y, Math.min(145, labelWidth));
         ctx.restore();
       }
     }
@@ -193,9 +203,9 @@ if (ctx) {
     link.addEventListener('pointerleave', () => highlight(null));
   });
 
+  canvas.closest('.model').classList.add('pyramid-ready');
   new ResizeObserver(resize).observe(canvas);
-  document.fonts.load('18px AllWords').then(render, render);
+  document.fonts.load('17px Title1').then(render, render);
 } else {
   canvas.hidden = true;
-  document.querySelector('#model-help').hidden = true;
 }

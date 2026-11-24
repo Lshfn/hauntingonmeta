@@ -19,7 +19,9 @@ function syncPanels(moveFocus) {
     if (moveFocus && target === selected) {
       selected.querySelector('h2').focus({ preventScroll: true });
     }
-    target.scrollIntoView({ block: 'start' });
+    if (selected.id !== 'project' || !matchMedia('(min-width: 821px)').matches) {
+      target.scrollIntoView({ block: 'start' });
+    }
   }
 }
 
@@ -31,9 +33,29 @@ faceLinks.forEach((link) => {
 });
 syncPanels(false);
 
+document.querySelector('.close-about').addEventListener('click', () => {
+  document.querySelector('#pyramid').focus({ preventScroll: true });
+});
+
 const viewer = document.querySelector('.viewer');
 const viewerImage = viewer.querySelector('img');
+const galleryControls = viewer.querySelector('.viewer-controls');
+const galleryCount = viewer.querySelector('.viewer-count');
 let lastFrame;
+let photos = [];
+let currentPhoto = 0;
+
+function showPhoto() {
+  const photo = photos[currentPhoto];
+  viewerImage.src = photo.href;
+  viewerImage.alt = photo.querySelector('img').alt;
+  galleryCount.textContent = `${currentPhoto + 1} / ${photos.length}`;
+}
+
+function stepPhoto(step) {
+  currentPhoto = (currentPhoto + step + photos.length) % photos.length;
+  showPhoto();
+}
 
 if (typeof viewer.showModal === 'function') {
   document.querySelectorAll('[data-lightbox]').forEach((frame) => {
@@ -41,13 +63,23 @@ if (typeof viewer.showModal === 'function') {
       if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
       event.preventDefault();
       lastFrame = frame;
-      viewerImage.src = frame.href;
-      viewerImage.alt = frame.querySelector('img').alt;
+      photos = Array.from(frame.closest('.room, .installation-grid').querySelectorAll('[data-lightbox]'));
+      currentPhoto = photos.indexOf(frame);
+      galleryControls.hidden = photos.length < 2;
+      showPhoto();
       viewer.showModal();
     });
   });
 
-  viewer.querySelector('button').addEventListener('click', () => viewer.close());
+  galleryControls.querySelectorAll('[data-gallery-step]').forEach((button) => {
+    button.addEventListener('click', () => stepPhoto(Number(button.dataset.galleryStep)));
+  });
+  viewer.addEventListener('keydown', (event) => {
+    if (photos.length < 2 || !['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
+    event.preventDefault();
+    stepPhoto(event.key === 'ArrowLeft' ? -1 : 1);
+  });
+  viewer.querySelector('.viewer-close').addEventListener('click', () => viewer.close());
   viewer.addEventListener('click', (event) => {
     if (event.target === viewer) viewer.close();
   });
@@ -68,6 +100,11 @@ if (location.protocol === 'https:' || location.protocol === 'http:') {
 let player;
 let triedMuted = false;
 
+function showSoundControl(show) {
+  playSound.hidden = !show;
+  playSound.parentElement.hidden = !show;
+}
+
 playSound.addEventListener('click', () => {
   player.unMute();
   player.playVideo();
@@ -81,7 +118,7 @@ window.onYouTubeIframeAPIReady = () => {
         target.playVideo();
       },
       onAutoplayBlocked: ({ target }) => {
-        playSound.hidden = false;
+        showSoundControl(true);
         if (!triedMuted) {
           triedMuted = true;
           target.mute();
@@ -90,11 +127,11 @@ window.onYouTubeIframeAPIReady = () => {
       },
       onStateChange: ({ data, target }) => {
         if (data === YT.PlayerState.PLAYING) {
-          playSound.hidden = !target.isMuted();
+          showSoundControl(target.isMuted());
         }
       },
       onError: () => {
-        playSound.hidden = true;
+        showSoundControl(false);
       },
     },
   });
