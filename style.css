@@ -103,8 +103,7 @@ h1 {
 .panel-heading { display: flex; justify-content: space-between; gap: 1rem; align-items: baseline; flex-wrap: wrap; margin-bottom: 1.45rem; }
 .panel-heading h2 { color: var(--green); font-size: clamp(2.2rem, 5vw, 4.2rem); font-weight: normal; line-height: 1; }
 .panel-heading h2:focus { outline: none; }
-.panel-heading a { color: var(--muted); }
-.panel-heading a:hover, .credits a, .room-links a:hover { color: var(--green); }
+.credits a, .room-links a:hover { color: var(--green); }
 .metadata { color: var(--green); margin-bottom: 1.2rem; }
 .project-text, .credits, .room-text { font-size: clamp(1.12rem, 2vw, 1.33rem); line-height: 1.48; max-width: 69ch; }
 .project-text p + p, .room-text p + p { margin-top: .9rem; }
@@ -154,19 +153,20 @@ figcaption { color: var(--muted); padding-top: .55rem; }
   padding: 0;
   background: #000;
   color: var(--text);
-  border: 1px solid var(--rule);
-  width: min(94vw, 84rem);
-  max-width: none;
+  border: 0;
+  outline: 1px solid var(--rule);
+  width: max-content;
+  max-width: 94vw;
   max-height: 94dvh;
+  overflow: hidden;
 }
 .viewer::backdrop { background: #000e; }
-.viewer-stage {
-  display: grid;
-  place-items: center;
-  height: min(78dvh, 52rem);
-  min-width: 0;
+.viewer-stage img {
+  max-width: 94vw;
+  max-height: 94dvh;
+  width: auto;
+  height: auto;
 }
-.viewer-stage img { max-width: 100%; max-height: 100%; min-width: 0; min-height: 0; object-fit: contain; }
 .viewer button {
   border: 1px solid var(--rule);
   color: var(--text);
@@ -178,13 +178,15 @@ figcaption { color: var(--muted); padding-top: .55rem; }
 .viewer button:hover { border-color: var(--green); color: var(--green); }
 .viewer-close { position: absolute; right: .5rem; top: .5rem; }
 .viewer-controls {
+  position: absolute;
+  inset: auto 0 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
   padding: .5rem;
 }
-.viewer-count { font-family: var(--title); }
+.viewer-count { font-family: var(--title); background: #000; padding: .2rem .4rem; }
 @media (max-width: 1020px) {
   .landing { padding-inline: 1.2rem; }
 }
@@ -198,5 +200,4 @@ figcaption { color: var(--muted); padding-top: .55rem; }
   .room-primary { grid-template-columns: 1fr; }
   .gallery, .resources { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .installation-grid .frame { height: auto; aspect-ratio: 3 / 4; }
-  .viewer-stage { height: min(72dvh, 110vw); }
 }
