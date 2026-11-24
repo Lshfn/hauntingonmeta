@@ -139,9 +139,9 @@ h1 {
 .frame:hover { outline: 1px solid var(--accent, var(--green)); }
 .gallery .frame { aspect-ratio: 16 / 10; }
 .next-portal { display: inline-block; margin-top: 1rem; color: var(--accent); }
-.installation-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.installation-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); max-width: 53rem; }
 .resources { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-.installation-grid .frame { height: min(62vh, 34rem); }
+.installation-grid .frame { aspect-ratio: 3 / 4; }
 figcaption { color: var(--muted); padding-top: .55rem; }
 .resources { margin-bottom: 1rem; }
 .resources a { border: 1px solid var(--rule); text-decoration: none; }
@@ -199,5 +199,5 @@ figcaption { color: var(--muted); padding-top: .55rem; }
   .about-panel .project-text { font-size: 1.12rem; }
   .room-primary { grid-template-columns: 1fr; }
   .gallery, .resources { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .installation-grid .frame { height: auto; aspect-ratio: 3 / 4; }
+  .installation-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 30rem; }
 }
