@@ -27,14 +27,25 @@ function syncPanels(moveFocus) {
 
 window.addEventListener('hashchange', () => syncPanels(true));
 faceLinks.forEach((link) => {
-  link.addEventListener('click', () => {
-    if (location.hash === link.hash) syncPanels(true);
+  link.addEventListener('click', (event) => {
+    if (location.hash !== link.hash) return;
+    if (link.hash === '#project') {
+      event.preventDefault();
+      dismissAbout();
+    } else {
+      syncPanels(true);
+    }
   });
 });
 syncPanels(false);
 
-document.querySelector('.close-about').addEventListener('click', () => {
+function dismissAbout() {
+  location.hash = 'top';
   document.querySelector('#pyramid').focus({ preventScroll: true });
+}
+
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape' && location.hash === '#project') dismissAbout();
 });
 
 const viewer = document.querySelector('.viewer');

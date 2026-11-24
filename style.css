@@ -35,7 +35,7 @@ button { border-radius: 0; font: inherit; }
 img, video { display: block; max-width: 100%; }
 h1, h2, h3, p, figure { margin: 0; }
 h1, h2, h3, summary { font-family: var(--title); text-transform: uppercase; }
-p, li, figcaption { text-align: justify; hyphens: auto; }
+p, li, figcaption { text-align: justify; hyphens: none; }
 .landing {
   min-height: min(54rem, 100svh);
   display: grid;
@@ -101,7 +101,6 @@ h1 {
 }
 .about-panel .panel-heading h2 { font-size: clamp(1.2rem, 2vw, 2rem); }
 .about-panel .project-text { font-size: clamp(.96rem, 1.15vw, 1.18rem); }
-.close-about { padding: .18rem .42rem; border: 1px solid var(--rule); text-decoration: none; }
 .panel-heading { display: flex; justify-content: space-between; gap: 1rem; align-items: baseline; flex-wrap: wrap; margin-bottom: 1.45rem; }
 .panel-heading h2 { color: var(--green); font-size: clamp(2.2rem, 5vw, 4.2rem); font-weight: normal; line-height: 1; }
 .panel-heading h2:focus { outline: none; }
@@ -125,11 +124,19 @@ h1 {
 .room-primary video { width: 100%; }
 .room-notes { border: 1px solid var(--rule); }
 .room-notes summary { color: var(--accent); padding: .65rem .85rem; }
-.room-text { padding: .3rem .85rem 1rem; font-size: 1.08rem; }
+.room-text {
+  padding: .3rem .85rem 1rem;
+  font-size: 1.08rem;
+  max-height: min(18rem, 38dvh);
+  overflow-y: auto;
+  scrollbar-color: var(--accent) #161616;
+}
+.room-text:focus-visible { outline-offset: -2px; }
 .gallery, .installation-grid, .resources { display: grid; gap: .7rem; }
 .gallery { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: .7rem; }
 .frame { display: block; background: #090909; }
 .frame img { width: 100%; height: 100%; object-fit: contain; }
+.room-feature .frame img { width: auto; height: auto; margin-inline: auto; }
 .frame:hover { outline: 1px solid var(--accent, var(--green)); }
 .gallery .frame { aspect-ratio: 16 / 10; }
 .next-portal { display: inline-block; margin-top: 1rem; color: var(--accent); }
@@ -153,7 +160,13 @@ figcaption { color: var(--muted); padding-top: .55rem; }
   max-height: 94dvh;
 }
 .viewer::backdrop { background: #000e; }
-.viewer img { width: 100%; height: min(78dvh, 52rem); object-fit: contain; }
+.viewer-stage {
+  display: grid;
+  place-items: center;
+  height: min(78dvh, 52rem);
+  min-width: 0;
+}
+.viewer-stage img { max-width: 100%; max-height: 100%; min-width: 0; min-height: 0; object-fit: contain; }
 .viewer button {
   border: 1px solid var(--rule);
   color: var(--text);
@@ -185,5 +198,5 @@ figcaption { color: var(--muted); padding-top: .55rem; }
   .room-primary { grid-template-columns: 1fr; }
   .gallery, .resources { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .installation-grid .frame { height: auto; aspect-ratio: 3 / 4; }
-  .viewer img { height: min(72dvh, 110vw); }
+  .viewer-stage { height: min(72dvh, 110vw); }
 }
